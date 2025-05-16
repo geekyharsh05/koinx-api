@@ -2,7 +2,6 @@ import {
     prop,
     getModelForClass,
     modelOptions,
-    type DocumentType,
   } from "@typegoose/typegoose";
   
   @modelOptions({ schemaOptions: { timestamps: true } })
