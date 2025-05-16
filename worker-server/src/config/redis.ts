@@ -9,14 +9,27 @@ dotenv.config();
 class RedisClient {
   private static instance: Redis | null = null;
 
+  /**
+   * Get the Redis client instance (creates one if it doesn't exist)
+   */
   public static getInstance(): Redis {
     if (!RedisClient.instance) {
-      RedisClient.instance = new Redis({
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-        password: process.env.REDIS_PASSWORD,
-      });
+      // Use REDIS_URL if available, otherwise fall back to host/port config
+      const redisUrl = process.env.REDIS_URL;
+      
+      if (redisUrl) {
+        RedisClient.instance = new Redis(redisUrl);
+        console.log('Connected to Redis using URL');
+      } else {
+        RedisClient.instance = new Redis({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: parseInt(process.env.REDIS_PORT || '6379'),
+          password: process.env.REDIS_PASSWORD,
+        });
+        console.log('Connected to Redis using host/port configuration');
+      }
 
+      // Handle Redis connection events
       RedisClient.instance.on('connect', () => {
         console.log('Connected to Redis');
       });
