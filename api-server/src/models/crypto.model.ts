@@ -21,4 +21,3 @@ import {
   }
   
   export const CryptoStats = getModelForClass(CryptoStatsClass); 
-  export type CryptoStatsDocument = DocumentType<CryptoStatsClass>;
