@@ -17,7 +17,7 @@ const cryptoController = new CryptoController();
  *         schema:
  *           type: string
  *         required: true
- *         description: The cryptocurrency symbol (e.g., BTC, ETH)
+ *         description: The cryptocurrency symbol (e.g., bitcoin, ethereum, matic-network)
  *     responses:
  *       200:
  *         description: Success
@@ -50,7 +50,7 @@ router.get('/stats', cryptoController.getStats);
  *         schema:
  *           type: string
  *         required: true
- *         description: The cryptocurrency symbol (e.g., BTC, ETH)
+ *         description: The cryptocurrency symbol (e.g., bitcoin, ethereum, matic-network)
  *     responses:
  *       200:
  *         description: Success
