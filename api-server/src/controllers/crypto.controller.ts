@@ -19,7 +19,7 @@ export class CryptoController {
     handleServiceError(result);
     
     return {
-      message: 'Stats retrieved successfully',
+      success: true,
       data: result.data
     };
   });
@@ -32,23 +32,8 @@ export class CryptoController {
     handleServiceError(result);
     
     return {
-      message: 'Deviation calculated successfully',
+      success: true,
       deviation: result.deviation
-    };
-  });
-
-  public refreshStats: RequestHandler = asyncHandler(async () => {
-    const result = await this.cryptoService.storeCryptoStats();
-    
-    if (!result.success) {
-      throw {
-        status: 500,
-        message: result.message
-      };
-    }
-    
-    return {
-      message: 'Cryptocurrency stats refreshed successfully'
     };
   });
 } 

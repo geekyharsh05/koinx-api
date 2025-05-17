@@ -15,8 +15,8 @@ import { rateLimiter } from "./middleware/rateLimiter";
 
 const app = express();
 
-// Trust proxy - needed for express-rate-limit to work with proxies
-app.set('trust proxy', true);
+// Trust proxy - configured to only trust the first proxy in the chain
+app.set('trust proxy', 1);
 const port = env.PORT;
 const cryptoService = new CryptoService();
 const redisService = new RedisService(cryptoService);
