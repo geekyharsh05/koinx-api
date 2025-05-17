@@ -1,14 +1,12 @@
 import Redis from 'ioredis';
-import dotenv from 'dotenv';
 import { CryptoService } from './crypto.service';
 import RedisClient from '../config/redis';
-
-dotenv.config();
+import { env } from '../config/env';
 
 export class RedisService {
   private redis: Redis;
   private cryptoService: CryptoService;
-  private readonly REDIS_CHANNEL = 'crypto-updates';
+  private readonly REDIS_CHANNEL = env.REDIS.CHANNEL;
   
   constructor(cryptoService: CryptoService) {
     this.cryptoService = cryptoService;
