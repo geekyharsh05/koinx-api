@@ -3,9 +3,13 @@ import morgan from "morgan";
 import { Database } from "./config/db";
 import type { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
 import cryptoRoutes from "./routes/crypto.route";
 import { CryptoService } from "./services/crypto.service";
 import { RedisService } from "./services/redis.service";
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import { swaggerOptions } from "./util/swagger";
 
 dotenv.config();
 
@@ -15,9 +19,16 @@ const cryptoService = new CryptoService();
 const redisService = new RedisService(cryptoService);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(helmet())
 app.use(morgan("dev"));
 
-app.use('/api/v1', cryptoRoutes);
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.use('/api/crypto', cryptoRoutes);
+
 
 app.get("/", (_ , res: Response) => {
   res.send("Crypto API Service");
@@ -32,15 +43,15 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
   });
 
-
-async function setupRedisSubscription() {
+// Setup Redis subscription
+const setupRedisSubscription = async () => {
   try {
     await redisService.subscribeToUpdates();
-    console.log("Successfully subscribed to Redis for worker-triggered updates");
+    console.log("Redis subscription setup complete.");
   } catch (error) {
     console.error("Failed to setup Redis subscription:", error);
   }
-}
+};
 
 const startServer = async () => {
     try {
@@ -50,6 +61,7 @@ const startServer = async () => {
   
       app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`);
+        console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
       });
 
       // Setup graceful shutdown
@@ -63,5 +75,5 @@ const startServer = async () => {
       process.exit(1);
     }
   };
-  
+
 startServer();
