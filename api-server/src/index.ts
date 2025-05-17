@@ -14,6 +14,9 @@ import { env, isProduction } from "./config/env";
 import { rateLimiter } from "./middleware/rateLimiter";
 
 const app = express();
+
+// Trust proxy - needed for express-rate-limit to work with proxies
+app.set('trust proxy', true);
 const port = env.PORT;
 const cryptoService = new CryptoService();
 const redisService = new RedisService(cryptoService);
