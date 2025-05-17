@@ -4,6 +4,7 @@ import { Database } from "./config/db";
 import type { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import cors from "cors";
 import cryptoRoutes from "./routes/crypto.route";
 import { CryptoService } from "./services/crypto.service";
 import { RedisService } from "./services/redis.service";
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet())
 app.use(morgan("dev"));
+app.use(cors());
 
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

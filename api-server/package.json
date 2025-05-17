@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/cors": "^2.8.18",
     "@types/ioredis": "^5.0.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8"
@@ -21,6 +22,7 @@
     "@types/express": "^5.0.1",
     "@types/morgan": "^1.9.9",
     "axios": "^1.6.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",

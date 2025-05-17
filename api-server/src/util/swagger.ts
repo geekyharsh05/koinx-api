@@ -1,4 +1,3 @@
-
 export const swaggerOptions = {
     definition: {
       openapi: "3.0.0",
@@ -9,8 +8,13 @@ export const swaggerOptions = {
       },
       servers: [
         {
-          url: `http://localhost:3000`,
+          url: "https://cryptoapi.theharsh.xyz",
+          description: "Production server"
         },
+        {
+          url: "http://localhost:3000",
+          description: "Development server"
+        }
       ],
     },
     apis: ["./src/routes/*.ts"],
