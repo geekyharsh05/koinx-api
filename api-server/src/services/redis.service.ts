@@ -9,7 +9,6 @@ export class RedisService {
   private redis: Redis;
   private cryptoService: CryptoService;
   private readonly REDIS_CHANNEL = 'crypto-updates';
-  private isSubscribed = false;
   
   constructor(cryptoService: CryptoService) {
     this.cryptoService = cryptoService;
@@ -18,16 +17,9 @@ export class RedisService {
 
   async subscribeToUpdates(): Promise<void> {
     try {
-      // Skip if already subscribed
-      if (this.isSubscribed) {
-        console.log(`Already subscribed to Redis channel: ${this.REDIS_CHANNEL}`);
-        return;
-      }
-
       console.log(`Setting up subscription to Redis channel: ${this.REDIS_CHANNEL}`);
       
       await this.redis.subscribe(this.REDIS_CHANNEL);
-      this.isSubscribed = true;
       console.log(`Subscribed to Redis channel: ${this.REDIS_CHANNEL}`);
       
       // Listen for messages separately
@@ -65,16 +57,10 @@ export class RedisService {
   
   async unsubscribe(): Promise<void> {
     try {
-      if (!this.isSubscribed) {
-        console.log(`Not subscribed to Redis channel: ${this.REDIS_CHANNEL}`);
-        return;
-      }
-      
       // Remove message listener
       this.redis.removeListener('message', this.handleMessage);
       
       await this.redis.unsubscribe(this.REDIS_CHANNEL);
-      this.isSubscribed = false;
       console.log(`Unsubscribed from Redis channel: ${this.REDIS_CHANNEL}`);
     } catch (error) {
       console.error('Error unsubscribing from Redis channel:', error);
