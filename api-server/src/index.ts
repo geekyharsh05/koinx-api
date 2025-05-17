@@ -27,8 +27,7 @@ app.use(morgan("dev"));
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use('/api/crypto', cryptoRoutes);
-
+app.use('/api/v1', cryptoRoutes);
 
 app.get("/", (_ , res: Response) => {
   res.send("Crypto API Service");

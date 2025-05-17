@@ -7,7 +7,7 @@ const cryptoController = new CryptoController();
 
 /**
  * @swagger
- * /api/crypto/stats:
+ * /api/v1/stats:
  *   get:
  *     summary: Get statistics for a cryptocurrency
  *     tags: [Crypto]
@@ -40,7 +40,7 @@ router.get('/stats', (req: Request, res: Response) => cryptoController.getStats(
 
 /**
  * @swagger
- * /api/crypto/deviation:
+ * /api/v1/deviation:
  *   get:
  *     summary: Get price deviation for a cryptocurrency
  *     tags: [Crypto]
