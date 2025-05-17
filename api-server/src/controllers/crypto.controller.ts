@@ -1,5 +1,7 @@
-import type { Request, Response } from 'express';
+import type { Request, RequestHandler } from 'express';
 import { CryptoService } from '../services/crypto.service';
+import { asyncHandler } from '../utils/asynchandler.util';
+import { validateCoinParam, handleServiceError } from '../utils/controller.util';
 
 export class CryptoController {
   private cryptoService: CryptoService;
@@ -8,59 +10,45 @@ export class CryptoController {
     this.cryptoService = new CryptoService();
   }
 
-  async getStats(req: Request, res: Response): Promise<void> {
+  public getStats: RequestHandler = asyncHandler(async (req: Request) => {
     const { coin } = req.query;
-
-    if (!coin || typeof coin !== 'string') {
-      res.status(400).json({ 
-        success: false, 
-        message: 'Coin parameter is required' 
-      });
-      return;
-    }
-
-    const result = await this.cryptoService.getLatestStats(coin);
+    validateCoinParam(coin as string);
     
-    if (!result.success) {
-      const statusCode = result.message?.includes('Unsupported coin') ? 400 : 500;
-      res.status(statusCode).json({ 
-        success: false, 
-        message: result.message 
-      });
-      return;
-    }
+    // Then get the latest stats
+    const result = await this.cryptoService.getLatestStats(coin as string);
+    handleServiceError(result);
     
-    res.json({
-      success: true,
+    return {
+      message: 'Stats retrieved successfully',
       data: result.data
-    });
-  }
+    };
+  });
 
-  async getDeviation(req: Request, res: Response): Promise<void> {
+  public getDeviation: RequestHandler = asyncHandler(async (req: Request) => {
     const { coin } = req.query;
+    validateCoinParam(coin as string);
 
-    if (!coin || typeof coin !== 'string') {
-      res.status(400).json({ 
-        success: false, 
-        message: 'Coin parameter is required' 
-      });
-      return;
-    }
+    const result = await this.cryptoService.getPriceDeviation(coin as string);
+    handleServiceError(result);
+    
+    return {
+      message: 'Deviation calculated successfully',
+      deviation: result.deviation
+    };
+  });
 
-    const result = await this.cryptoService.getPriceDeviation(coin);
+  public refreshStats: RequestHandler = asyncHandler(async () => {
+    const result = await this.cryptoService.storeCryptoStats();
     
     if (!result.success) {
-      const statusCode = result.message?.includes('Unsupported coin') ? 400 : 500;
-      res.status(statusCode).json({ 
-        success: false, 
-        message: result.message 
-      });
-      return;
+      throw {
+        status: 500,
+        message: result.message
+      };
     }
     
-    res.json({
-      success: true,
-      deviation: result.deviation
-    });
-  }
+    return {
+      message: 'Cryptocurrency stats refreshed successfully'
+    };
+  });
 } 

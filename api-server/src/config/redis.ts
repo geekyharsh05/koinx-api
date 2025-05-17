@@ -1,7 +1,5 @@
 import Redis from 'ioredis';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { env } from './env';
 
 /**
  * Redis client singleton
@@ -15,15 +13,15 @@ class RedisClient {
   public static getInstance(): Redis {
     if (!RedisClient.instance) {
       // Use REDIS_URL if available, otherwise fall back to host/port config
-      const redisUrl = process.env.REDIS_URL;
+      const redisUrl = env.REDIS.URL;
       
       if (redisUrl) {
         RedisClient.instance = new Redis(redisUrl);
         console.log('Connected to Redis using URL');
       } else {
         RedisClient.instance = new Redis({
-          host: process.env.REDIS_HOST || 'localhost',
-          port: parseInt(process.env.REDIS_PORT || '6379'),
+          host: env.REDIS.HOST,
+          port: env.REDIS.PORT,
         });
         console.log('Connected to Redis using host/port configuration');
       }
