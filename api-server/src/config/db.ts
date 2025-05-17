@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { env } from "./env";
 
 export class Database {
   private static instance: Database;
@@ -14,11 +15,7 @@ export class Database {
 
   public async connect(): Promise<void> {
     try {
-      const uri = process.env.MONGO_URI;
-
-      if (!uri) {
-        throw new Error("DATABASE_URL is not defined in environment variables");
-      }
+      const uri = env.MONGODB.URI;
 
       await mongoose.connect(uri);
 
