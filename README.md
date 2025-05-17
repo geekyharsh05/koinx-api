@@ -1,43 +1,63 @@
-# KoinX Assignment
+# KoinX Crypto Tracker
 
-A cryptocurrency price tracking system with API server and worker service.
+A real-time cryptocurrency price tracking system with an API server and background worker service.
 
-## Docker Setup
+## Tech Stack
 
-This project is containerized using Docker and can be easily run using Docker Compose.
+- **Runtime**: [Bun](https://bun.sh/)
+- **Backend Framework**: [Express.js](https://expressjs.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [TypeGoose](https://typegoose.github.io/typegoose/) for type-safe models
+- **Worker**: [Redis](https://redis.io/) for pub/sub and ratelimiting.
+- **API Documentation**: [Swagger](https://swagger.io/) for interactive API docs
+- **Deployment**: [Coolify](https://coolify.io/) on VPS
+
+## Architecture
+
+The application consists of two main services:
+
+1. **API Server**: Handles HTTP requests and provides crypto data to clients
+2. **Worker Server**: Runs scheduled tasks to fetch and update cryptocurrency data
+
+## Setup Instructions
 
 ### Prerequisites
 
-- Docker
-- Docker Compose
+- Bun installed on your machine
+- MongoDB instance
+- Redis server
 
-### Running the Application
+### Local Development
 
-1. Clone the repository
-2. Create `.env` files for both services:
-   - `api-server/.env`
-   - `worker-server/.env`
-3. Build and start the containers:
+1. Clone the repository:
 
 ```bash
-docker-compose up -d
+git clone https://github.com/geekyharsh05/koinx-assignment.git
+cd koinx-assignment
 ```
 
-This will start:
+2. Set up environment variables for both services:
 
-- API server on port 3000
-- Worker server that publishes updates every 15 minutes
-- Redis instance on port 6379
+**api-server/.env**:
 
-### Stopping the Application
-
-```bash
-docker-compose down
+```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/koinx
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_URL=redis://localhost:6379
+COINGECKO_API_URL=https://api.coingecko.com/api/v3
 ```
 
-## Development
+**worker-server/.env**:
 
-### API Server
+```
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_URL=redis://localhost:6379
+```
+
+3. Install dependencies and start the API server:
 
 ```bash
 cd api-server
@@ -45,7 +65,7 @@ bun install
 bun run dev
 ```
 
-### Worker Server
+4. In a separate terminal, start the Worker server:
 
 ```bash
 cd worker-server
@@ -53,7 +73,40 @@ bun install
 bun run dev
 ```
 
+### Docker Setup
+
+For containerized development:
+
+```bash
+docker-compose up -d
+```
+
+This starts the API server, Worker server, MongoDB, and Redis.
+
+## API Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+- Local: http://localhost:3000/api-docs
+- Production: https://cryptoapi.theharsh.xyz/api-docs
+
 ## API Endpoints
 
 - `GET /api/v1/stats?coin=bitcoin` - Get latest crypto stats
 - `GET /api/v1/deviation?coin=bitcoin` - Get price deviation
+
+### Supported Coins
+
+- bitcoin
+- ethereum
+- matic-network
+
+## Deployment
+
+The application is deployed using Coolify on a VPS:
+
+## Performance Optimizations
+
+- Compound MongoDB index on coin and timestamp for efficient queries
+- Redis pub/sub for communication between services
+- Periodic data caching with configurable refresh intervals
