@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { CryptoStats } from '../models/crypto.model';
+import { env } from '../config/env';
 
 export class CryptoService {
-  private readonly COINGECKO_API_URL = process.env.COINGECKO_API_URL;
-  private readonly SUPPORTED_COINS = ['bitcoin', 'ethereum', 'matic-network'];
+  private readonly COINGECKO_API_URL = env.API.COINGECKO_URL;
+  private readonly SUPPORTED_COINS = env.SUPPORTED_COINS;
 
   async storeCryptoStats(): Promise<{ success: boolean; message: string }> {
     try {
@@ -16,7 +17,7 @@ export class CryptoService {
           page: 1,
           sparkline: false,
           price_change_percentage: '24h'
-        }
+        },
       });
 
       const cryptoData = response.data;
@@ -65,7 +66,7 @@ export class CryptoService {
       }
 
       const stats = await CryptoStats.findOne({ coin })
-        .sort({ timestamp: -1 })
+        .sort({ createdAt: -1 })
         .lean();
 
       if (!stats) {
@@ -103,7 +104,7 @@ export class CryptoService {
 
       // Get the last 100 records for the specified coin
       const stats = await CryptoStats.find({ coin })
-        .sort({ timestamp: -1 })
+        .sort({ createdAt: -1 })
         .limit(100)
         .lean();
 
